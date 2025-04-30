@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Bienvenido - Torneos UMES</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <img src="{{ url_for('static', filename='imagenes/logo_UMES.png') }}" alt="Logo UMES" width="70" height="70" class="me-2">
+        Torneos UMES
+      </a>
+      <div class="ms-auto">
+        <a href="/login" class="btn btn-outline-light me-2">Login</a>
+        <a href="/registro" class="btn btn-warning">Registrarse</a>
+      </div>
+    </div>
+  </nav>
+
+  
+<!-- Encabezado con fondo -->
+<header class="hero-section text-white text-center">
+    <div class="overlay"></div>
+    <div class="content">
+      <h1 class="animate__animated animate__fadeInDown">¡Bienvenido a los Torneos Universitarios de Fútbol!</h1>
+      <p class="animate__animated animate__fadeInUp">Organizado por la Universidad Mesoamericana</p>
+    </div>
+  </header>
+  
+  <!-- Historia -->
+  <section class="container my-5">
+    <h2 class="text-center mb-4">Nuestra Historia</h2>
+    <p class="text-justify">
+      Desde hace más de 20 años, la Universidad Mesoamericana ha promovido el deporte entre sus estudiantes mediante torneos interfacultades. Este programa busca fomentar el compañerismo, la salud y la competencia sana.
+    </p>
+  </section>
+  
+  <!-- Galería de imágenes -->
+  <section class="container mb-5">
+    <h2 class="text-center mb-4">Galería de Torneos Pasados</h2>
+    <div class="row g-3">
+      <div class="col-md-4"><img src="{{ url_for('static', filename='imagenes/imagen1.jpg') }}" class="img-fluid rounded"></div>
+      <div class="col-md-4"><img src="{{ url_for('static', filename='images/imagen1.jpg') }}" class="img-fluid rounded"></div>
+      <div class="col-md-4"><img src="{{ url_for('static', filename='images/imagen1.jpg') }}" class="img-fluid rounded"></div>
+    </div>
+  </section>
+  
+  <!-- Contacto -->
+  <footer class="bg-dark text-white py-4">
+    <div class="container text-center">
+      <p>📞 Contacto: (502) 5555-1234 | (502) 5555-6789</p>
+      <p>📧 deportes@umes.edu.gt</p>
+      <p>© Yonathan Say, Elison Vail, Carlos Garcia</p>
+    </div>
+  </footer>
+  
+  <!-- JS y animaciones -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  </body>
+  </html>

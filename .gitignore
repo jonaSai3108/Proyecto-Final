@@ -1,0 +1,48 @@
+# Archivos generados por Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Entorno virtual
+venv/
+env/
+
+# Configuración del entorno
+*.env
+
+# Archivos de logs
+logs/
+*.log
+
+# Dependencias
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Archivos generados por herramientas de desarrollo
+*.swp
+.idea/
+.vscode/
+
+# Datos de ejecución
+*.sqlite3
+*.db
+
+# Cobertura de pruebas
+.coverage
+htmlcov/
+*.cover
+*.py,cover
+nosetests.xml
+coverage.xml
+*.mo
+*.pot
+
+# Documentación generada
+docs/_build/
+
+# Archivos de empaquetado
+dist/
+build/
+*.egg-info
+.eggs/
