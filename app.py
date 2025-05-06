@@ -124,3 +124,12 @@ try:
 except Exception as e:
     print(f"Error al enviar el correo: {e}")
     flash("No se pudo enviar el correo, pero el usuario fue registrado.")
+
+#portada
+@app.route('/')
+def portada():
+    return render_template('portada.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
+                             
