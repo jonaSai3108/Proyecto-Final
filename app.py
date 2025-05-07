@@ -1,18 +1,37 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_mail import Mail, Message
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 import pymysql
-from werkzeug.security import check_password_hash
-from flask import session
-
 
 app = Flask(__name__)
 app.secret_key = 'una_clave_secreta'
 
-
-# Configuracion de login
-# Configuración para manejo de sesiones
+# Configuración de sesión
 app.config['SESSION_TYPE'] = 'filesystem'
+
+# Configurar correo
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'rodemirovail@gmail.com'
+app.config['MAIL_PASSWORD'] = '123456'
+mail = Mail(app)
+
+# Función para crear la conexión a la base de datos
+def get_connection():
+    return pymysql.connect(
+        host='127.0.0.1',
+        port=3306,
+        user='root',
+        password='Evichs21!',
+        db='DBTorneosFutbol',
+        cursorclass=pymysql.cursors.DictCursor
+    )
+
+@app.route('/')
+def index():
+    print("Ruta / accedida")
+    return render_template('index.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -23,12 +42,11 @@ def login():
         try:
             conn = get_connection()
             with conn.cursor() as cursor:
-                # Verificar si el usuario existe
                 cursor.execute("SELECT password FROM Usuarios WHERE username = %s", (username,))
                 usuario = cursor.fetchone()
 
                 if usuario and check_password_hash(usuario['password'], password):
-                    session['usuario'] = username  # Guardar en sesión
+                    session['usuario'] = username
                     flash(f"¡Bienvenido, {username}!")
                     return redirect(url_for('index'))
                 else:
@@ -43,35 +61,6 @@ def login():
 
     return render_template('login.html')
 
-
-
-
-
-
-
-# Configurar correo
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'rodemirovail@gmail.com'  
-app.config['MAIL_PASSWORD'] = '123456' 
-mail = Mail(app)
-
-# Función para crear la conexión a la base de datos
-def get_connection():
-    return pymysql.connect(
-        host='127.0.0.1',  
-        port=3306,        
-        user='root',
-        password='Evichs21!',
-        db='DBTorneosFutbol',
-        cursorclass=pymysql.cursors.DictCursor
-    )
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -81,7 +70,7 @@ def register():
         password_hash = generate_password_hash(password)
 
         try:
-            conn = get_connection()  # creas nueva conexión
+            conn = get_connection()
             with conn.cursor() as cursor:
                 cursor.callproc('sp_InsertarLogin', (username, correo, password_hash))
                 conn.commit()
@@ -112,15 +101,11 @@ def register():
             return redirect(url_for('register'))
         finally:
             conn.close()
-            
-        
 
     return render_template('registro.html')
 
-if __name__ == '__main__':
+
+# Ejecutar la aplicación
+if __name__ == "__main__":
+    print("La aplicación se ha iniciado")
     app.run(debug=True)
-try:
-    mail.send(msg)
-except Exception as e:
-    print(f"Error al enviar el correo: {e}")
-    flash("No se pudo enviar el correo, pero el usuario fue registrado.")

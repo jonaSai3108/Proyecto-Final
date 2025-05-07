@@ -6,23 +6,43 @@
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background: #f4f6f8;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .background {
+            background: url('https://i.pinimg.com/736x/8f/bf/10/8fbf10d50be8dad20363f051797864e1.jpg') no-repeat center center fixed;
+            background-size: cover;
+            filter: blur(1px);
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            z-index: -1;
+        }
+
+        .center {
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
         }
+
         .form-container {
-            background: white;
+            background: rgba;
             padding: 30px 40px;
             border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
             width: 350px;
+            position: relative;
+            z-index: 1;
         }
-        .form-container h2 {
+
+        h2 {
             margin-bottom: 20px;
             color: #333;
         }
+
         input[type="text"], input[type="email"], input[type="password"] {
             width: 100%;
             padding: 10px 12px;
@@ -31,6 +51,7 @@
             border-radius: 8px;
             box-sizing: border-box;
         }
+
         button {
             width: 100%;
             background: #007bff;
@@ -41,9 +62,11 @@
             font-weight: bold;
             cursor: pointer;
         }
+
         button:hover {
             background: #0056b3;
         }
+
         .flash {
             background: #d4edda;
             color: #155724;
@@ -55,15 +78,17 @@
     </style>
 </head>
 <body>
-    <div class="form-container">
-        <h2>Registro</h2>
-        
-        <form method="POST">
-            <input type="text" name="username" placeholder="Nombre de usuario" required>
-            <input type="email" name="correo" placeholder="Correo electrónico" required>
-            <input type="password" name="password" placeholder="Contraseña" required>
-            <button type="submit">Registrarse</button>
-        </form>
+    <div class="background"></div>
+    <div class="center">
+        <div class="form-container">
+            <h2>Registro</h2>
+            <form method="POST">
+                <input type="text" name="username" placeholder="Nombre de usuario" required>
+                <input type="email" name="correo" placeholder="Correo electrónico" required>
+                <input type="password" name="password" placeholder="Contraseña" required>
+                <button type="submit">Registrarse</button>
+            </form>
+        </div>
     </div>
 </body>
 </html>
