@@ -42,7 +42,7 @@ def login():
         try:
             conn = get_connection()
             with conn.cursor() as cursor:
-                cursor.execute("SELECT password FROM Usuarios WHERE username = %s", (username,))
+                cursor.execute("SELECT password FROM Login WHERE username = %s", (username,))
                 usuario = cursor.fetchone()
 
                 if usuario and check_password_hash(usuario['password'], password):
@@ -109,3 +109,17 @@ def register():
 if __name__ == "__main__":
     print("La aplicación se ha iniciado")
     app.run(debug=True)
+try:
+    mail.send(msg)
+except Exception as e:
+    print(f"Error al enviar el correo: {e}")
+    flash("No se pudo enviar el correo, pero el usuario fue registrado.")
+
+#portada
+@app.route('/')
+def portada():
+    return render_template('portada.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
+                             
