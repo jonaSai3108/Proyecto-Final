@@ -1,8 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_mail import Mail, Message
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 import pymysql
-from werkzeug.security import check_password_hash
 from flask import session
 
 
@@ -57,16 +56,6 @@ app.config['MAIL_USERNAME'] = 'rodemirovail@gmail.com'
 app.config['MAIL_PASSWORD'] = '123456' 
 mail = Mail(app)
 
-# Función para crear la conexión a la base de datos
-def get_connection():
-    return pymysql.connect(
-        host='127.0.0.1',  
-        port=3306,        
-        user='root',
-        password='Evichs21!',
-        db='DBTorneosFutbol',
-        cursorclass=pymysql.cursors.DictCursor
-    )
 
 @app.route('/')
 def index():
@@ -117,18 +106,12 @@ def register():
 
     return render_template('registro.html')
 
-if __name__ == '__main__':
-    app.run(debug=True)
-try:
-    mail.send(msg)
-except Exception as e:
-    print(f"Error al enviar el correo: {e}")
-    flash("No se pudo enviar el correo, pero el usuario fue registrado.")
+
 
 #portada
-@app.route('/')
+@app.route('/portada', methods=['GET', 'POST'])
 def portada():
-    return render_template('portada.html')
+    return render_template('pantalla_principal.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

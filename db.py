@@ -1,15 +1,18 @@
-import pyodbc
+import mysql.connector
+from mysql.connector import Error
 
 def get_connection():
     try:
-        connection = pyodbc.connect(
-            r'DRIVER={ODBC Driver 17 for SQL Server};'
-            r'SERVER=localhost\SQLEXPRESS;' 
-            r'DATABASE=NombreDeTuBaseDeDatos;'  
-            r'Trusted_Connection=yes;'
-
+        connection = mysql.connector.connect(
+            host='localhost',         # o el host donde tengas el servidor MySQL
+            port=3306,                # puerto por defecto de MySQL
+            user='root',        # tu usuario, por ejemplo 'root'
+            password='Noe31081998', # tu contraseña
+            database='DBTorneosFutbol'
         )
-        return connection
-    except Exception as e:
-        print("Error al conectra a la base de datos", e)
+        if connection.is_connected():
+            print("Conexión exitosa a la base de datos")
+            return connection
+    except Error as e:
+        print(f"Error al conectar a la base de datos: {e}")
         return None
