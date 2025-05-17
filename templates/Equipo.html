@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Equipos</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/portada.css') }}">
+  <style>
+    /* Estilos para la sección de equipos */
+    .card-equipo {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      margin-bottom: 20px;
+      border: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .card-equipo:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .card-header-equipo {
+      background-color: #015551;
+      color: white;
+      border-radius: 10px 10px 0 0 !important;
+      padding: 15px;
+      font-weight: bold;
+    }
+    
+    .btn-equipo {
+      background-color: #015551;
+      color: white;
+      border: none;
+    }
+    
+    .btn-equipo:hover {
+      background-color: #01403c;
+    }
+    
+    #equiposContainer {
+      padding: 20px;
+    }
+    
+    .estado-badge {
+      font-size: 0.8rem;
+      padding: 5px 10px;
+      border-radius: 20px;
+    }
+    
+    .estado-activo {
+      background-color: #28a745;
+    }
+    
+    .estado-inactivo {
+      background-color: #dc3545;
+    }
+    
+    /* Espaciado y organización */
+    .filtros-container {
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: rgba(255,255,255,0.2);
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar superior -->
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm fixed-top" style="background-color: #015551;">
+  <div class="container">
+    <a class="navbar-brand" href="#">
+      <img src="{{ url_for('static', filename='imagenes/Umes.png') }}" alt="Logo" height="70" class="d-inline-block align-top">
+    </a>
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item">
+        <a href="pantalla_principal.html" class="nav-link">INICIO</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="portada">
+  <div class="overlay"></div>
+
+  <!-- Contenedor principal -->
+  <div class="contenido">
+    
+    <!-- Contenido principal para equipos -->
+    <div class="main-content">
+      <div class="container-fluid">
+        <h1 class="text-white mb-4">Lista de Equipos</h1>
+        
+        <!-- Sección de filtros y búsqueda -->
+        <div class="filtros-container">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <div class="input-group">
+                <input type="text" id="inputBusqueda" class="form-control" placeholder="Buscar equipo...">
+                <button class="btn btn-equipo" type="button">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <select id="selectEstado" class="form-select">
+                <option value="">Todos los estados</option>
+                <option value="activo">Activos</option>
+                <option value="inactivo">Inactivos</option>
+              </select>
+            </div>
+            <div class="col-md-2 mb-3 text-end">
+              <button id="btnAgregarEquipo" class="btn btn-equipo">
+                <i class="fas fa-plus"></i> Nuevo
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Contenedor para los equipos -->
+        <div class="row" id="equiposContainer">
+          <!-- Ejemplo estático de equipo (será reemplazado por datos dinámicos) -->
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card card-equipo">
+              <div class="card-header card-header-equipo d-flex justify-content-between align-items-center">
+                <span>Los Primos FC</span>
+                <span class="estado-badge estado-activo">Activo</span>
+              </div>
+              <div class="card-body">
+                <p class="card-text"><strong>Representante:</strong> Yonathan Say </p>
+                <p class="card-text"><strong>Contacto:</strong> YonaSay@gmail.com</p>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                  <small class="text-muted">ID: 1</small>
+                  <div>
+                    <button class="btn btn-sm btn-equipo me-2">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-equipo">
+                      <i class="fas fa-info-circle"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para detalles/edición -->
+<div class="modal fade" id="equipoModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #015551; color: white;">
+        <h5 class="modal-title">Detalles del Equipo</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="modalEquipoBody">
+        <!-- Contenido dinámico -->
+        <p>Aquí se mostrarán los detalles del equipo seleccionado.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-equipo">Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts base (sin lógica de API aún) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<script>
+  // Espacio reservado para la lógica de la API
+  // Aquí irán las funciones para:
+  // 1. Cargar equipos desde la API
+  // 2. Filtrar y buscar equipos
+  // 3. Mostrar detalles en el modal
+  // 4. Agregar/editar equipos
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    // Inicializaciones pueden ir aquí
+    console.log('Página cargada, lista para integrar API');
+  });
+</script>
+
+</body>
+</html>
