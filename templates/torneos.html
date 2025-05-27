@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gestión de Torneos</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      padding-top: 90px;
+      background-color: #f5f8f5;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .navbar {
+      background-color: #015551;
+    }
+
+    .navbar-brand img {
+      height: 60px;
+    }
+
+    h1, h2 {
+      color: #015551;
+      font-weight: bold;
+    }
+
+    .form-control {
+      border-radius: 0.5rem;
+    }
+
+    .btn-success {
+      background-color: #038c65;
+      border-color: #038c65;
+    }
+
+    .btn-success:hover {
+      background-color: #027a57;
+    }
+
+    .btn-secondary {
+      background-color: #cccccc;
+      border-color: #cccccc;
+    }
+
+    .table {
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+
+    .table-dark th {
+      background-color: #015551;
+    }
+
+    textarea {
+      resize: none;
+    }
+
+    .card {
+      border-radius: 1rem;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+    }
+
+    footer {
+      padding: 1rem;
+      text-align: center;
+      color: #ffffff;
+      background-color: #015551;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <img src="{{ url_for('static', filename='imagenes/Umes.png') }}" alt="Logo UMES">
+      </a>
+      <span class="text-white fs-4 fw-semibold">Sistema de Torneos - UMES</span>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1 class="mb-4 text-center">Gestión de Torneos Universitarios</h1>
+
+    <!-- Formulario -->
+    <div class="card p-4 mb-5">
+      <form id="formTorneo">
+        <input type="hidden" id="idTorneo">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <input class="form-control" type="text" id="nombre" placeholder="Nombre del Torneo" required>
+          </div>
+          <div class="col-md-3">
+            <input class="form-control" type="number" id="id_tipo_torneo" placeholder="Tipo de Torneo" required>
+          </div>
+          <div class="col-md-3">
+            <input class="form-control" type="number" id="id_temporada" placeholder="Temporada" required>
+          </div>
+          <div class="col-md-3">
+            <input class="form-control" type="date" id="fecha_inicio" required>
+          </div>
+          <div class="col-md-3">
+            <input class="form-control" type="date" id="fecha_fin" required>
+          </div>
+          <div class="col-md-6">
+            <input class="form-control" type="number" id="limite_equipos" placeholder="Límite de Equipos" required>
+          </div>
+          <div class="col-md-3">
+            <input class="form-control" type="date" id="fecha_insc_inicio" required>
+          </div>
+          <div class="col-md-3">
+            <input class="form-control" type="date" id="fecha_insc_fin" required>
+          </div>
+          <div class="col-12">
+            <textarea class="form-control" id="descripcion" placeholder="Descripción del Torneo" rows="2" required></textarea>
+          </div>
+          <div class="col-12">
+            <textarea class="form-control" id="reglamento" placeholder="Reglamento" rows="2" required></textarea>
+          </div>
+          <div class="col-12 d-flex gap-3 justify-content-end">
+            <button class="btn btn-success" type="submit">Guardar Torneo</button>
+            <button class="btn btn-secondary" type="button" onclick="resetForm()">Cancelar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Tabla -->
+    <h2 class="mb-3">Torneos Registrados</h2>
+    <div class="table-responsive">
+      <table class="table table-bordered" id="tablaTorneos">
+        <thead class="table-dark text-center">
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Inicio</th>
+            <th>Fin</th>
+            <th>Temporada</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="text-center"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    Universidad Mesoamericana - UMES &copy; 2025
+  </footer>
+
+  <script>
+    const API_URL = "/api/torneos";
+
+    document.getElementById('formTorneo').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = getFormData();
+      const id = document.getElementById('idTorneo').value;
+
+      const metodo = id ? 'PUT' : 'POST';
+      const url = id ? `${API_URL}/${id}` : API_URL;
+
+      await fetch(url, {
+        method: metodo,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      resetForm();
+      cargarTorneos();
+    });
+
+    function getFormData() {
+      return {
+        nombre: document.getElementById('nombre').value,
+        id_tipo_torneo: parseInt(document.getElementById('id_tipo_torneo').value),
+        id_temporada: parseInt(document.getElementById('id_temporada').value),
+        fecha_inicio: document.getElementById('fecha_inicio').value,
+        fecha_fin: document.getElementById('fecha_fin').value,
+        descripcion: document.getElementById('descripcion').value,
+        reglamento: document.getElementById('reglamento').value,
+        limite_equipos: parseInt(document.getElementById('limite_equipos').value),
+        fecha_insc_inicio: document.getElementById('fecha_insc_inicio').value,
+        fecha_insc_fin: document.getElementById('fecha_insc_fin').value
+      };
+    }
+
+    function resetForm() {
+      document.getElementById('formTorneo').reset();
+      document.getElementById('idTorneo').value = '';
+    }
+
+    async function cargarTorneos() {
+      const res = await fetch(API_URL);
+      const torneos = await res.json();
+      const tbody = document.querySelector('#tablaTorneos tbody');
+      tbody.innerHTML = '';
+
+      torneos.forEach(t => {
+        const fila = document.createElement('tr');
+        fila.innerHTML = `
+          <td>${t.id_torneo}</td>
+          <td>${t.nombre}</td>
+          <td>${t.fecha_inicio}</td>
+          <td>${t.fecha_fin}</td>
+          <td>${t.id_temporada}</td>
+          <td>
+            <button class="btn btn-sm btn-primary" onclick='editar(${JSON.stringify(t)})'>Editar</button>
+            <button class="btn btn-sm btn-danger" onclick='eliminar(${t.id_torneo})'>Eliminar</button>
+          </td>
+        `;
+        tbody.appendChild(fila);
+      });
+    }
+
+    function editar(torneo) {
+      document.getElementById('idTorneo').value = torneo.id_torneo;
+      document.getElementById('nombre').value = torneo.nombre;
+      document.getElementById('id_tipo_torneo').value = torneo.id_tipo_torneo;
+      document.getElementById('id_temporada').value = torneo.id_temporada;
+      document.getElementById('fecha_inicio').value = torneo.fecha_inicio;
+      document.getElementById('fecha_fin').value = torneo.fecha_fin;
+      document.getElementById('descripcion').value = torneo.descripcion;
+      document.getElementById('reglamento').value = torneo.reglamento;
+      document.getElementById('limite_equipos').value = torneo.limite_equipos;
+      document.getElementById('fecha_insc_inicio').value = torneo.fecha_insc_inicio;
+      document.getElementById('fecha_insc_fin').value = torneo.fecha_insc_fin;
+    }
+
+    async function eliminar(id) {
+      if (confirm('¿Eliminar este torneo?')) {
+        await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+        cargarTorneos();
+      }
+    }
+
+    cargarTorneos();
+  </script>
+</body>
+</html>

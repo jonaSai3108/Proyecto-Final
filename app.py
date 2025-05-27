@@ -4,14 +4,25 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import pymysql
 from flask import session
 
+# Importar blueprint después de definir get_connection si es necesario
+from api.torneos import torneos_bp
+
+from api.equipos import equipos_bp
+
 
 app = Flask(__name__)
 app.secret_key = 'una_clave_secreta'
-
-
 # Configuracion de login
 # Configuración para manejo de sesiones
 app.config['SESSION_TYPE'] = 'filesystem'
+
+
+# Configurar Blueprint de APIS
+app.register_blueprint(torneos_bp, url_prefix='/api/torneos')
+
+app.register_blueprint(equipos_bp, url_prefix='/api/equipos')
+
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -112,6 +123,19 @@ def register():
 @app.route('/portada', methods=['GET', 'POST'])
 def portada():
     return render_template('pantalla_principal.html')
+
+
+@app.route('/torneo', methods=['GET', 'POST'])
+def torneo():
+    return render_template('torneos.html')
+
+@app.route('/Jugadores', methods=['GET', 'POST'])
+def jugadores():
+    return render_template('Jugadores.html')
+
+@app.route('/Equipos', methods=['GET', 'POST'])
+def equipos():
+    return render_template('Equipo.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
