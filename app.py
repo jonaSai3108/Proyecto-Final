@@ -137,6 +137,26 @@ def jugadores():
 def equipos():
     return render_template('Equipo.html')
 
+@app.route('/Cancha', methods=['GET', 'POST'])
+def cancha():
+    return render_template('Cancha.html')
+
+@app.route('/Partidod', methods=['GET', 'POST'])
+def Partidos():
+    return render_template('´Partidos.html')
+
+@app.route('/Resultados', methods=['GET', 'POST'])
+def Resultados():
+    return render_template('Resultados.html')
+
+@app.route('/Arbitros', methods=['GET', 'POST'])
+def Arbitros():
+    return render_template('Arbitros.html')
+
+@app.route('/TablaPosiciones', methods=['GET', 'POST'])
+def TablaPosiciones():
+    return render_template('TablaPosiciones.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
                              
