@@ -7,7 +7,7 @@ def get_connection():
             host='localhost',         # o el host donde tengas el servidor MySQL
             port=3306,                # puerto por defecto de MySQL
             user='root',        # tu usuario, por ejemplo 'root'
-            password='Noe31081998', # tu contraseña
+            password='1230', # tu contraseña
             database='DBTorneosFutbol'
         )
         if connection.is_connected():
