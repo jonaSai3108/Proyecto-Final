@@ -9,6 +9,9 @@ from api.torneos import torneos_bp
 
 from api.equipos import equipos_bp
 
+from api.facultades import facultades_bp  # Importamos nuestro blueprint
+
+
 
 app = Flask(__name__)
 app.secret_key = 'una_clave_secreta'
@@ -21,6 +24,8 @@ app.config['SESSION_TYPE'] = 'filesystem'
 app.register_blueprint(torneos_bp, url_prefix='/api/torneos')
 
 app.register_blueprint(equipos_bp, url_prefix='/api/equipos')
+app.register_blueprint(facultades_bp, url_prefix='/api/facultades')
+
 
 
 
@@ -141,13 +146,13 @@ def equipos():
 def cancha():
     return render_template('Cancha.html')
 
-@app.route('/Partidod', methods=['GET', 'POST'])
+@app.route('/Partidos', methods=['GET', 'POST'])
 def Partidos():
-    return render_template('´Partidos.html')
+    return render_template('Partidos.html')
 
 @app.route('/Resultados', methods=['GET', 'POST'])
 def Resultados():
-    return render_template('Resultados.html')
+    return render_template('Resultado.html')
 
 @app.route('/Arbitros', methods=['GET', 'POST'])
 def Arbitros():
@@ -155,7 +160,16 @@ def Arbitros():
 
 @app.route('/TablaPosiciones', methods=['GET', 'POST'])
 def TablaPosiciones():
-    return render_template('TablaPosiciones.html')
+    return render_template('TablaPosisiones.html')
+
+
+@app.route('/EquiposCRUD', methods=['GET', 'POST'])
+def EquiposCRUD():
+    return render_template('equiposCRUD.html')
+
+@app.route('/Editar_equipo')
+def editar_equipo():
+    return render_template('Editar_equipo.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

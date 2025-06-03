@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gestión de Equipos</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/equiposCRUD.css') }}">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <img src="{{ url_for('static', filename='imagenes/Umes.png') }}" alt="Logo UMES">
+      </a>
+      <span class="text-white fs-4 fw-semibold">Sistema de Torneos - UMES</span>
+    </div>
+  </nav>
+
+  <div class="container mt-5">
+    <h2 class="text-center mb-4">Registrar Nuevo Equipo</h2>
+
+    <!-- Formulario -->
+    <section class="card p-4 mb-5 shadow">
+      <form id="formEquipo">
+        <div class="row g-3">
+          <div class="col-md-6">
+        <label for="nombre" class="form-label">Nombre del equipo</label>
+        <input type="text" id="nombre" class="form-control" required>
+      </div>
+      <div class="col-md-6">
+        <label for="representante" class="form-label">Representante</label>
+        <input type="text" id="representante" class="form-control" required>
+      </div>
+      <div class="col-md-6">
+        <label for="contacto" class="form-label">Contacto</label>
+        <input type="text" id="contacto" class="form-control" required>
+      </div>
+
+      <div class="col-md-6">
+        <label for="estado" class="form-label">Estado</label>
+        <select id="estado" class="form-select" required>
+          <option value="">Seleccione</option>
+          <option value="Activo">Activo</option>
+          <option value="Inactivo">Inactivo</option>
+        </select>
+      </div>
+      
+      <div class="col-md-6">
+        <label for="fecha_registro" class="form-label">Fecha de Registro</label>
+        <input type="date" id="fecha_registro" class="form-control" required>
+      </div>
+
+      <div class="col-md-6">
+        <label for="id_facultad" class="form-label">Facultad</label>
+        <select id="id_facultad" class="form-select" required>
+          <option value="">Carrera</option>
+        </select>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <button type="submit" class="btn w-25 mt-3 just" style="background-color: #A08963; border-color: #A08963; color: #fff;">
+          <i class="bi bi-patch-plus"></i> Registrar Equipo
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- Tabla -->
+<section>
+  <h2 class="text-center  mb-4">Equipos Registrados</h2>
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped" id="tablaEquipos">
+        <thead class="table-dark text-center">
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Representante</th>
+            <th>Contacto</th>
+            <th>Estado</th>
+            <th>Fecha Registro</th>
+            <th>Fecha Creacion</th>
+            <th>Fecha Modificacion</th>
+            <th>Facultad</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="text-center"></tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+  <footer>
+    Universidad Mesoamericana - UMES &copy; 2025
+  </footer>
+
+<script src="{{ url_for('static', filename='js/equipoCRUD.js') }}"></script>
+
+</body>
+</html>

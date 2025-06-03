@@ -137,3 +137,26 @@ def eliminar_equipo(id_equipo):
     finally:
         cursor.close()
         conn.close()
+
+
+#Ruta para consumir la vista que nos muestra los detalles de cualquier equipo
+@equipos_bp.route('/vista/<int:id_equipo>', methods=['GET'])
+def obtener_equipo_vista(id_equipo):
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("SELECT * FROM vista_equipo_facultad WHERE id_equipo = %s", (id_equipo,))
+        equipo = cursor.fetchone()
+
+        if equipo is None:
+            return jsonify({'error': 'Equipo no encontrado'}), 404
+
+        return jsonify(equipo), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+    finally:
+        cursor.close()
+        conn.close()

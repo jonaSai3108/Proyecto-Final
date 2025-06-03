@@ -4,10 +4,10 @@ from mysql.connector import Error
 def get_connection():
     try:
         connection = mysql.connector.connect(
-            host='localhost',         # o el host donde tengas el servidor MySQL
-            port=3306,                # puerto por defecto de MySQL
-            user='root',        # tu usuario, por ejemplo 'root'
-            password='Noe31081998', # tu contraseña
+            host='localhost',         
+            port=3306,                
+            user='root',       
+            password='Noe31081998', 
             database='DBTorneosFutbol'
         )
         if connection.is_connected():

@@ -1,0 +1,33 @@
+ body {
+      padding-top: 90px;
+      background-color: #f8faf9;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .navbar {
+      background-color: #015551;
+    }
+    .navbar-brand img {
+      height: 60px;
+    }
+    h1, h2 {
+      color: #015551;
+      font-weight: bold;
+    }
+    .btn-success {
+      background-color: #038c65;
+      border-color: #038c65;
+    }
+    .btn-success:hover {
+      background-color: #027a57;
+    }
+    .btn-secondary {
+      background-color: #cccccc;
+      border-color: #cccccc;
+    }
+    footer {
+      padding: 1rem;
+      text-align: center;
+      color: #ffffff;
+      background-color: #015551;
+      margin-top: 50px;
+    }
