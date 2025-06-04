@@ -3,6 +3,8 @@ from flask_mail import Mail, Message
 from werkzeug.security import generate_password_hash, check_password_hash
 import pymysql
 from flask import session
+from db import get_connection  # Importar la función get_connection desde db.py
+# Importar los blueprints de las APIs
 
 # Importar blueprint después de definir get_connection si es necesario
 from api.torneos import torneos_bp
@@ -10,6 +12,8 @@ from api.torneos import torneos_bp
 from api.equipos import equipos_bp
 
 from api.facultades import facultades_bp  # Importamos nuestro blueprint
+
+from api.temporada import temporada_bp
 
 
 
@@ -25,7 +29,7 @@ app.register_blueprint(torneos_bp, url_prefix='/api/torneos')
 
 app.register_blueprint(equipos_bp, url_prefix='/api/equipos')
 app.register_blueprint(facultades_bp, url_prefix='/api/facultades')
-
+app.register_blueprint(temporada_bp, url_prefix='/api/temporadas')
 
 
 
@@ -134,6 +138,8 @@ def portada():
 def torneo():
     return render_template('torneos.html')
 
+
+
 @app.route('/Jugadores', methods=['GET', 'POST'])
 def jugadores():
     return render_template('Jugadores.html')
@@ -158,6 +164,7 @@ def Resultados():
 def Arbitros():
     return render_template('Arbitros.html')
 
+
 @app.route('/TablaPosiciones', methods=['GET', 'POST'])
 def TablaPosiciones():
     return render_template('TablaPosisiones.html')
@@ -170,6 +177,14 @@ def EquiposCRUD():
 @app.route('/Editar_equipo')
 def editar_equipo():
     return render_template('Editar_equipo.html')
+
+@app.route('/Temporada', methods=['GET', 'POST'])
+def temporadas():
+    if request.method == 'POST':
+        # Procesar formulario enviado
+        return redirect(url_for('temporadas'))
+    return render_template('temporada.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)

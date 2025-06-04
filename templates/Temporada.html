@@ -1,100 +1,201 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tipos de Torneo</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/portada.css') }}">
-  <style>
-    /* Estilos adicionales específicos para la visualización de torneos */
-    .card-torneo {
-      background-color: rgba(255, 255, 255, 0.9);
-      border-radius: 10px;
-      margin-bottom: 20px;
-      border: none;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    
-    .card-header-torneo {
-      background-color: #015551;
-      color: white;
-      border-radius: 10px 10px 0 0 !important;
-      padding: 15px;
-    }
-    
-    .btn-torneo {
-      background-color: #015551;
-      color: white;
-    }
-    
-    #tiposTorneoContainer {
-      padding: 20px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Temporadas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/temporada.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 </head>
 <body>
-
-<!-- Navbar superior -->
-<nav class="navbar navbar-expand-lg navbar-dark shadow-sm fixed-top" style="background-color: #015551;">
-  <div class="container">
-    <a class="navbar-brand" href="#">
-      <img src="{{ url_for('static', filename='imagenes/Umes.png') }}" alt="Logo" height="70" class="d-inline-block align-top">
-    </a>
-    <li class="nav-item"><a href="pantalla_principal.html" class="nav-link">INICIO</a></li>
-  </div>
-</nav>
-
-<div class="portada">
-  <div class="overlay"></div>
-
-  <!-- Contenedor principal flex -->
-  <div class="contenido">
-    
-    <!-- Contenido principal modificado para tipos de torneo -->
-    <div class="main-content">
-      <div class="container-fluid">
-        <h1 class="text-white mb-4">Tipos de Torneo</h1>
-        
-        <!-- Contenedor donde se cargarán los tipos de torneo desde la API -->
-        <div class="row" id="tiposTorneoContainer">
-          <!-- Los datos se cargarán aquí dinámicamente con JavaScript -->
-          
-          <!-- Ejemplo estático (será reemplazado por datos reales) -->
-          <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card card-torneo">
-              <div class="card-header card-header-torneo">
-                TORNEO APERTURA 2025
-              </div>
-              <div class="card-body">
-                <p class="card-text"> Torneo de marzo a mayo</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <small class="text-muted">ID: 1</small>
-                  <button class="btn btn-sm btn-torneo">Ver más</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="text-primary">
+                <i class="bi bi-calendar-range"></i> Gestión de Temporadas
+            </h1>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearTemporadaModal">
+                <i class="bi bi-plus-circle"></i> Nueva Temporada
+            </button>
         </div>
-      </div>
+
+        <!-- Filtros -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-label">Estado</label>
+                        <select id="filtroEstado" class="form-select">
+                            <option value="">Todas</option>
+                            <option value="Activa">Activas</option>
+                            <option value="Pendiente">Pendientes</option>
+                            <option value="Finalizada">Finalizadas</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Desde</label>
+                        <input type="date" id="filtroDesde" class="form-control">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Hasta</label>
+                        <input type="date" id="filtroHasta" class="form-control">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumen -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card text-white bg-primary">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Temporadas</h5>
+                        <p class="card-text display-4" id="totalTemporadas">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <h5 class="card-title">Activas</h5>
+                        <p class="card-text display-4" id="totalActivas">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-warning">
+                    <div class="card-body">
+                        <h5 class="card-title">Pendientes</h5>
+                        <p class="card-text display-4" id="totalPendientes">0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Listado -->
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-list-ul"></i> Listado de Temporadas
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Fecha Inicio</th>
+                                <th>Fecha Fin</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaTemporadas">
+                            <!-- Datos se cargarán con JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 
-<!-- Scripts necesarios -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  // Espacio reservado para la función que cargará los datos desde la API
-  document.addEventListener('DOMContentLoaded', function() {
-    // Esta función se llamará cuando la página esté lista
-    // cargarTiposTorneo();
-  });
-  
+    <!-- Modal Crear -->
+    <div class="modal fade" id="crearTemporadaModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Crear Nueva Temporada</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formCrearTemporada">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" class="form-control" name="nombre" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Fecha Inicio</label>
+                                <input type="date" class="form-control" name="fecha_inicio" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Fecha Fin</label>
+                                <input type="date" class="form-control" name="fecha_fin" required>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="crearTemporada()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar -->
+    <div class="modal fade" id="editarTemporadaModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Temporada</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formEditarTemporada">
+                        <input type="hidden" name="id_temporada">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" class="form-control" name="nombre" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Fecha Inicio</label>
+                                <input type="date" class="form-control" name="fecha_inicio" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Fecha Fin</label>
+                                <input type="date" class="form-control" name="fecha_fin" required>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="actualizarTemporada()">Actualizar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmar Eliminar -->
+    <div class="modal fade" id="confirmarEliminarModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro que deseas eliminar esta temporada?</p>
+                    <p class="fw-bold" id="nombreTemporadaEliminar"></p>
+                    <p>Esta acción no se puede deshacer.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" onclick="eliminarTemporadaConfirmada()">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/temporada.js') }}"></script>
 
 
-</script>
-  
 </body>
 </html>

@@ -1,0 +1,22 @@
+<style>
+        .card {
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .badge-activa {
+            background-color: #28a745;
+        }
+        .badge-pendiente {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .badge-finalizada {
+            background-color: #6c757d;
+        }
+        .table-responsive {
+            max-height: 500px;
+        }
+    </style>
