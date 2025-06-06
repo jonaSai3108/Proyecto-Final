@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify
-from datetime import datetime
-from db import mysql
+from db import get_connection
 
 temporada_bp = Blueprint('temporada', __name__, url_prefix='/api/temporadas')
 
@@ -14,25 +13,32 @@ def crear_temporada():
         return jsonify({'error': 'Faltan campos requeridos: nombre, fecha_inicio, fecha_fin'}), 400
     
     try:
-        cursor = mysql.connection.cursor()
-        cursor.callproc('crear_temporada', [
-            datos['nombre'],
-            datos['fecha_inicio'],
-            datos['fecha_fin'],
-            0,  # placeholder para p_id
-            ''   # placeholder para p_resultado
-        ])
+        connection = get_connection()
+        if not connection:
+            return jsonify({'error': 'Error al conectar con la base de datos'}), 500
+            
+        cursor = connection.cursor(dictionary=True)
         
-        cursor.execute('SELECT @p_id, @p_resultado')
-        resultado = cursor.fetchone()
+        # Llamar al procedimiento almacenado
+        args = (datos['nombre'], datos['fecha_inicio'], datos['fecha_fin'], 0, '')
+        cursor.callproc('crear_temporada', args)
+        
+        # Obtener resultados
+        cursor.execute('SELECT @_crear_temporada_3, @_crear_temporada_4')
+        result = cursor.fetchone()
+        p_id = result['@_crear_temporada_3'] 
+        p_resultado = result['@_crear_temporada_4']
+        
+        connection.commit()
         cursor.close()
+        connection.close()
         
-        if resultado['@p_id'] == -1:
-            return jsonify({'error': resultado['@p_resultado']}), 400
+        if p_id == -1:
+            return jsonify({'error': p_resultado}), 400
         
         return jsonify({
-            'id': resultado['@p_id'],
-            'mensaje': resultado['@p_resultado'],
+            'id': p_id,
+            'mensaje': p_resultado,
             'temporada': {
                 'nombre': datos['nombre'],
                 'fecha_inicio': datos['fecha_inicio'],
@@ -42,18 +48,27 @@ def crear_temporada():
         }), 201
         
     except Exception as e:
+        if 'connection' in locals() and connection.is_connected():
+            connection.rollback()
+            cursor.close()
+            connection.close()
         return jsonify({'error': f'Error al crear temporada: {str(e)}'}), 500
 
 # Listar todas las temporadas
 @temporada_bp.route('/listar', methods=['GET'])
 def obtener_temporadas():
     try:
-        # Actualizar estados primero
-        cursor = mysql.connection.cursor()
-        cursor.callproc('actualizar_estados_temporadas')
-        cursor.close()
+        connection = get_connection()
+        if not connection:
+            return jsonify({'error': 'Error al conectar con la base de datos'}), 500
+            
+        cursor = connection.cursor(dictionary=True)
         
-        cursor = mysql.connection.cursor()
+        # Actualizar estados primero
+        cursor.callproc('actualizar_estados_temporadas')
+        connection.commit()
+        
+        # Obtener todas las temporadas
         cursor.execute("""
             SELECT id_temporada, nombre, 
                    DATE_FORMAT(fecha_inicio, '%%Y-%%m-%%d') as fecha_inicio,
@@ -65,19 +80,27 @@ def obtener_temporadas():
         
         temporadas = cursor.fetchall()
         cursor.close()
+        connection.close()
         
         return jsonify({
             'total': len(temporadas),
             'temporadas': temporadas
         }), 200
     except Exception as e:
+        if 'connection' in locals() and connection.is_connected():
+            cursor.close()
+            connection.close()
         return jsonify({'error': f'Error al listar temporadas: {str(e)}'}), 500
 
 # Obtener detalles de una temporada específica
 @temporada_bp.route('/obtener/<int:id_temporada>', methods=['GET'])
 def obtener_temporada(id_temporada):
     try:
-        cursor = mysql.connection.cursor()
+        connection = get_connection()
+        if not connection:
+            return jsonify({'error': 'Error al conectar con la base de datos'}), 500
+            
+        cursor = connection.cursor(dictionary=True)
         cursor.execute("""
             SELECT id_temporada, nombre, 
                    DATE_FORMAT(fecha_inicio, '%%Y-%%m-%%d') as fecha_inicio,
@@ -89,12 +112,16 @@ def obtener_temporada(id_temporada):
         
         temporada = cursor.fetchone()
         cursor.close()
+        connection.close()
         
         if not temporada:
             return jsonify({'error': f'Temporada con ID {id_temporada} no encontrada'}), 404
             
         return jsonify({'temporada': temporada}), 200
     except Exception as e:
+        if 'connection' in locals() and connection.is_connected():
+            cursor.close()
+            connection.close()
         return jsonify({'error': f'Error al obtener temporada: {str(e)}'}), 500
 
 # Actualizar una temporada existente
@@ -107,13 +134,19 @@ def actualizar_temporada(id_temporada):
         return jsonify({'error': 'Faltan campos requeridos: nombre, fecha_inicio, fecha_fin'}), 400
     
     try:
+        connection = get_connection()
+        if not connection:
+            return jsonify({'error': 'Error al conectar con la base de datos'}), 500
+            
+        cursor = connection.cursor(dictionary=True)
+        
         # Verificar si existe la temporada
-        cursor = mysql.connection.cursor()
         cursor.execute("SELECT nombre FROM temporada WHERE id_temporada = %s", (id_temporada,))
         temp_existente = cursor.fetchone()
         
         if not temp_existente:
             cursor.close()
+            connection.close()
             return jsonify({'error': f'Temporada con ID {id_temporada} no encontrada'}), 404
         
         # Actualizar la temporada
@@ -125,7 +158,7 @@ def actualizar_temporada(id_temporada):
             WHERE id_temporada = %s
         """, (datos['nombre'], datos['fecha_inicio'], datos['fecha_fin'], id_temporada))
         
-        mysql.connection.commit()
+        connection.commit()
         
         # Obtener datos actualizados
         cursor.execute("""
@@ -139,6 +172,7 @@ def actualizar_temporada(id_temporada):
         
         temporada_actualizada = cursor.fetchone()
         cursor.close()
+        connection.close()
         
         return jsonify({
             'mensaje': 'Temporada actualizada correctamente',
@@ -146,19 +180,26 @@ def actualizar_temporada(id_temporada):
         }), 200
         
     except Exception as e:
-        mysql.connection.rollback()
+        if 'connection' in locals() and connection.is_connected():
+            connection.rollback()
+            cursor.close()
+            connection.close()
         return jsonify({'error': f'Error al actualizar temporada: {str(e)}'}), 500
 
 # Eliminar una temporada
 @temporada_bp.route('/eliminar/<int:id_temporada>', methods=['DELETE'])
 def eliminar_temporada(id_temporada):
     try:
-        cursor = mysql.connection.cursor()
+        connection = get_connection()
+        if not connection:
+            return jsonify({'error': 'Error al conectar con la base de datos'}), 500
+            
+        cursor = connection.cursor(dictionary=True)
         
         # Primero obtener datos para respuesta
         cursor.execute("""
             SELECT nombre, fecha_inicio, fecha_fin 
-            FROM temporada 
+            FROM tempo rada 
             WHERE id_temporada = %s
         """, (id_temporada,))
         
@@ -166,12 +207,14 @@ def eliminar_temporada(id_temporada):
         
         if not temp_eliminada:
             cursor.close()
+            connection.close()
             return jsonify({'error': f'Temporada con ID {id_temporada} no encontrada'}), 404
         
         # Eliminar la temporada
         cursor.execute("DELETE FROM temporada WHERE id_temporada = %s", (id_temporada,))
-        mysql.connection.commit()
+        connection.commit()
         cursor.close()
+        connection.close()
         
         return jsonify({
             'mensaje': 'Temporada eliminada correctamente',
@@ -184,15 +227,23 @@ def eliminar_temporada(id_temporada):
         }), 200
         
     except Exception as e:
-        mysql.connection.rollback()
+        if 'connection' in locals() and connection.is_connected():
+            connection.rollback()
+            cursor.close()
+            connection.close()
         return jsonify({'error': f'Error al eliminar temporada: {str(e)}'}), 500
 
 # Obtener la temporada actualmente activa
 @temporada_bp.route('/actual', methods=['GET'])
 def temporada_actual():
     try:
-        cursor = mysql.connection.cursor()
+        connection = get_connection()
+        if not connection:
+            return jsonify({'error': 'Error al conectar con la base de datos'}), 500
+            
+        cursor = connection.cursor(dictionary=True)
         cursor.callproc('actualizar_estados_temporadas')
+        connection.commit()
         
         cursor.execute("""
             SELECT id_temporada, nombre, 
@@ -205,6 +256,7 @@ def temporada_actual():
         
         temporada = cursor.fetchone()
         cursor.close()
+        connection.close()
         
         if not temporada:
             return jsonify({'mensaje': 'No hay temporada activa actualmente'}), 404
@@ -214,4 +266,7 @@ def temporada_actual():
             'temporada_actual': temporada
         }), 200
     except Exception as e:
+        if 'connection' in locals() and connection.is_connected():
+            cursor.close()
+            connection.close()
         return jsonify({'error': f'Error al obtener temporada actual: {str(e)}'}), 500

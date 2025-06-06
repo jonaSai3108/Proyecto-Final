@@ -1,62 +1,248 @@
- body {
-      padding-top: 90px;
-      background-color: #f5f8f5;
-      font-family: 'Segoe UI', sans-serif;
-    }
+/* Paleta de colores basada en #015551 */
+:root {
+    --primary-color: #015551;
+    --primary-dark: #013d3a;
+    --primary-light: #017a74;
+    --secondary-color: #e0f2f1;
+    --accent-color: #ffab40;
+    --text-dark: #333333;
+    --text-light: #f5f5f5;
+    --background-light: #f8f9fa;
+    --success-color: #4caf50;
+    --warning-color: #ff9800;
+    --danger-color: #f44336;
+}
 
-    .navbar {
-      background-color: #015551;
-    }
+/* Estilos generales */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-dark);
+    background-color: var(--background-light);
+}
 
-    .navbar-brand img {
-      height: 60px;
-    }
+.container {
+    max-width: 1200px;
+}
 
-    h1, h2 {
-      color: #015551;
-      font-weight: bold;
-    }
+h2 {
+    color: var(--primary-dark);
+    font-weight: 600;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary-color);
+    display: inline-block;
+}
 
-    .form-control {
-      border-radius: 0.5rem;
-    }
+.card-title {
+    color: var(--primary-dark);
+    font-weight: 500;
+}
 
-    .btn-success {
-      background-color: #038c65;
-      border-color: #038c65;
-    }
+/* Estilos para el formulario */
+#formPartido {
+    background-color: #fff;
+    border-radius: 8px;
+    border: none;
+    border-top: 4px solid var(--primary-color);
+}
 
-    .btn-success:hover {
-      background-color: #027a57;
-    }
+#formPartido label {
+    font-weight: 500;
+    color: var(--primary-dark);
+    margin-bottom: 5px;
+}
 
-    .btn-secondary {
-      background-color: #cccccc;
-      border-color: #cccccc;
-    }
+#formPartido .form-control,
+#formPartido .form-select {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 8px 12px;
+    box-shadow: none;
+}
 
-    .table {
-      border-radius: 0.5rem;
-      overflow: hidden;
-    }
+#formPartido .form-control:focus,
+#formPartido .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(1, 85, 81, 0.25);
+}
 
-    .table-dark th {
-      background-color: #015551;
-    }
+/* Estilos para botones */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    padding: 8px 20px;
+    font-weight: 500;
+}
 
-    textarea {
-      resize: none;
-    }
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
 
-    .card {
-      border-radius: 1rem;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
-    }
+.btn-secondary {
+    padding: 8px 20px;
+    font-weight: 500;
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
 
-    footer {
-      padding: 1rem;
-      text-align: center;
-      color: #ffffff;
-      background-color: #015551;
-      margin-top: 50px;
+/* Estilos para las tarjetas de partidos */
+#tarjetasPartidos {
+    gap: 20px;
+}
+
+.partido-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+    border-left: 4px solid var(--primary-color);
+}
+
+.partido-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.partido-card h5 {
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+/* Estilos para la tabla */
+.table-responsive {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
+    padding: 12px 15px;
+}
+
+.table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: var(--secondary-color);
+}
+
+.table td, .table th {
+    vertical-align: middle;
+    padding: 10px 15px;
+}
+
+/* Estilos para los botones de acción */
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+}
+
+.btn-edit {
+    background-color: var(--warning-color);
+    border-color: var(--warning-color);
+    color: white;
+}
+
+.btn-edit:hover {
+    background-color: #e68a00;
+    border-color: #e68a00;
+    color: white;
+}
+
+.btn-delete {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+    color: white;
+}
+
+.btn-delete:hover {
+    background-color: #d32f2f;
+    border-color: #d32f2f;
+    color: white;
+}
+
+/* Badges para estados */
+.badge-estado {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: white;
+}
+
+.badge-programado {
+    background-color: var(--primary-light);
+}
+
+.badge-en-juego {
+    background-color: var(--warning-color);
+}
+
+.badge-finalizado {
+    background-color: var(--success-color);
+}
+
+.badge-cancelado {
+    background-color: var(--danger-color);
+}
+
+/* Efectos visuales */
+.shadow {
+    box-shadow: 0 0.5rem 1rem rgba(1, 85, 81, 0.15) !important;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .row.mb-3 {
+        flex-direction: column;
     }
+    
+    .col-md-6 {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+    
+    .text-end {
+        text-align: center !important;
+    }
+    
+    .btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    .btn.ms-2 {
+        margin-left: 0 !important;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#formPartido, #tarjetasPartidos, .card.shadow {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Mejoras visuales adicionales */
+select.form-select:focus, 
+input.form-control:focus {
+    border-color: var(--primary-light);
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(1, 85, 81, 0.05);
+}

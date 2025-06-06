@@ -1,0 +1,52 @@
+.card-partido {
+  background-color: #015551;
+  color: rgb(236, 233, 233);
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  margin-bottom: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding: 15px;
+}
+
+.card-partido:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.card-header span {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.card-body p {
+  margin: 0.3rem 0;
+}
+
+.card-actions {
+  margin-top: 10px;
+  display: flex;
+  justify-content: end;
+  gap: 10px;
+}
+
+.btn-edit, .btn-delete {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 5px;
+  color: #a9aaa7;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.btn-edit {
+  background-color: #ffc107;
+}
+
+.btn-delete {
+  background-color: #dc3545;
+}
