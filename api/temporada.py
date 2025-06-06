@@ -199,7 +199,7 @@ def eliminar_temporada(id_temporada):
         # Primero obtener datos para respuesta
         cursor.execute("""
             SELECT nombre, fecha_inicio, fecha_fin 
-            FROM temporada 
+            FROM tempo rada 
             WHERE id_temporada = %s
         """, (id_temporada,))
         
