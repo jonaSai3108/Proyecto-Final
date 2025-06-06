@@ -1,8 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
-from flask_mail import Mail, Message
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import Flask, render_template, request, redirect, url_for, session
 import pymysql
-from flask import session
+from auth.decorators import login_required, admin_required
 from db import get_connection  # Importar la función get_connection desde db.py
 # Importar los blueprints de las APIs
 
@@ -15,13 +13,14 @@ from api.facultades import facultades_bp  # Importamos nuestro blueprint
 
 from api.temporada import temporada_bp
 
+from auth import auth_bp  #blueprint de autenticación
+
 
 
 app = Flask(__name__)
-app.secret_key = 'una_clave_secreta'
-# Configuracion de login
-# Configuración para manejo de sesiones
-app.config['SESSION_TYPE'] = 'filesystem'
+app.secret_key = 'clave_super_secreta'
+
+app.register_blueprint(auth_bp) 
 
 
 # Configurar Blueprint de APIS
@@ -33,99 +32,28 @@ app.register_blueprint(temporada_bp, url_prefix='/api/temporadas')
 
 
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
 
-        try:
-            conn = get_connection()
-            with conn.cursor() as cursor:
-                # Verificar si el usuario existe
-                cursor.execute("SELECT password FROM Usuarios WHERE username = %s", (username,))
-                usuario = cursor.fetchone()
-
-                if usuario and check_password_hash(usuario['password'], password):
-                    session['usuario'] = username  # Guardar en sesión
-                    flash(f"¡Bienvenido, {username}!")
-                    return redirect(url_for('index'))
-                else:
-                    flash("Usuario o contraseña incorrectos.")
-                    return redirect(url_for('login'))
-
-        except Exception as e:
-            flash(f"Ocurrió un error: {str(e)}")
-            return redirect(url_for('login'))
-        finally:
-            conn.close()
-
-    return render_template('login.html')
-
-
-
-
-
-
-
-# Configurar correo
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'rodemirovail@gmail.com'  
-app.config['MAIL_PASSWORD'] = '123456' 
-mail = Mail(app)
-
-
+#RUTAS 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        correo = request.form['correo']
-        password = request.form['password']
-        password_hash = generate_password_hash(password)
+# Ruta de inicio de sesión
 
-        try:
-            conn = get_connection()  # creas nueva conexión
-            with conn.cursor() as cursor:
-                cursor.callproc('sp_InsertarLogin', (username, correo, password_hash))
-                conn.commit()
 
-            # Enviar correo de bienvenida
-            msg = Message(subject='🎉 ¡Bienvenido a la aplicación!',
-                          recipients=[correo])
-            msg.html = f"""
-            <div style="font-family:sans-serif;">
-                <h2>Hola, {username} 👋</h2>
-                <p>Gracias por registrarte en nuestra aplicación.</p>
-                <p><strong>Tu usuario:</strong> {username}</p>
-                <p>¡Esperamos que disfrutes la experiencia!</p>
-                <hr>
-                <small>Este es un mensaje automático. No respondas a este correo.</small>
-            </div>
-            """
-            mail.send(msg)
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    if session['rol'] == 'ADMINISTRADOR':
+        return "Panel ADMIN - Bienvenido, " + session['username']
+    else:
+        return "Panel USUARIO - Bienvenido, " + session['username']
 
-            flash('Registro exitoso. Revisa tu correo 📧')
-            return redirect(url_for('register'))
-
-        except pymysql.err.IntegrityError:
-            flash('El nombre de usuario ya existe.')
-            return redirect(url_for('register'))
-        except Exception as e:
-            flash(f'Ocurrió un error: {str(e)}')
-            return redirect(url_for('register'))
-        finally:
-            conn.close()
-            
-        
-
-    return render_template('registro.html')
-
+# Ruta de inicio de sesión de ADMINISTRADORES
+@app.route('/admin-only')
+@admin_required
+def admin_panel():
+    return "Contenido exclusivo para administradores"
 
 
 #portada
