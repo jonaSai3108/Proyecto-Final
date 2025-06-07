@@ -24,6 +24,7 @@ from api.facultades import facultades_bp
 from api.temporada import temporada_bp
 from api.cancha import cancha_bp
 from api.partido import partido_bp
+from api.jugadores import jugadores_bp
 
 app.register_blueprint(torneos_bp, url_prefix='/api/torneos')
 app.register_blueprint(equipos_bp, url_prefix='/api/equipos')
@@ -31,6 +32,7 @@ app.register_blueprint(facultades_bp, url_prefix='/api/facultades')
 app.register_blueprint(temporada_bp, url_prefix='/api/temporadas')
 app.register_blueprint(cancha_bp, url_prefix='/api/cancha')
 app.register_blueprint(partido_bp, url_prefix='/api/partido')
+app.register_blueprint(jugadores_bp, url_prefix='/api/jugadores')
 
 # Rutas principales
 @app.route('/')
