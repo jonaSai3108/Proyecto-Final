@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from db import get_connection
 
-temporada_bp = Blueprint('temporada',__name__, url_prefix='/api/temporadas')
+temporada_bp = Blueprint('temporada', __name__, url_prefix='/api/temporadas')
 
 # Crear nueva temporada
 @temporada_bp.route('/crear', methods=['POST'])

@@ -20,7 +20,6 @@ app.secret_key = 'una_clave_secreta'
 # Configuracion de login
 
 
-
 app.register_blueprint(torneos_bp, url_prefix='/api/torneos')
 app.register_blueprint(equipos_bp, url_prefix='/api/equipos')
 app.register_blueprint(facultades_bp, url_prefix='/api/facultades')
@@ -30,11 +29,11 @@ app.register_blueprint(partido_bp, url_prefix='/api/partido')
 # Configuración para manejo de sesiones
 app.register_blueprint(auth_bp)
 
+
 # Rutas principales
 @app.route('/')
 def index():
     return render_template('index.html')
-
 
 
 @app.route('/dashboard')
@@ -53,6 +52,7 @@ def admin_panel():
 
 #portada
 @app.route('/portada', methods=['GET', 'POST'])
+
 def portada():
     return render_template('pantalla_principal.html')
 
