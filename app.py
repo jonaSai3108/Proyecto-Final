@@ -14,7 +14,7 @@ app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = 'rodemirovail@gmail.com'
-app.config['MAIL_PASSWORD'] = '123456' 
+app.config['MAIL_PASSWORD'] = '123456'  # Asegúrate de usar variables de entorno para contraseñas en producción
 mail = Mail(app)
 
 # Importar y registrar blueprints
@@ -25,6 +25,7 @@ from api.temporada import temporada_bp
 from api.cancha import cancha_bp
 from api.partido import partido_bp
 from api.jugadores import jugadores_bp
+from api.resultado import resultado_bp
 
 app.register_blueprint(torneos_bp, url_prefix='/api/torneos')
 app.register_blueprint(equipos_bp, url_prefix='/api/equipos')
@@ -33,6 +34,7 @@ app.register_blueprint(temporada_bp, url_prefix='/api/temporadas')
 app.register_blueprint(cancha_bp, url_prefix='/api/cancha')
 app.register_blueprint(partido_bp, url_prefix='/api/partido')
 app.register_blueprint(jugadores_bp, url_prefix='/api/jugadores')
+app.register_blueprint(resultado_bp, url_prefix='/api')
 
 # Rutas principales
 @app.route('/')
@@ -46,8 +48,8 @@ def login():
         password = request.form['password']
 
         try:
-            conn = get_connection()  # Usamos la función directamente
-            with conn.cursor() as cursor:
+            conn = get_connection()
+            with conn.cursor(pymysql.cursors.DictCursor) as cursor:
                 cursor.execute("SELECT password FROM Usuarios WHERE username = %s", (username,))
                 usuario = cursor.fetchone()
 
@@ -63,7 +65,7 @@ def login():
             flash(f"Ocurrió un error: {str(e)}")
             return redirect(url_for('login'))
         finally:
-            if 'conn' in locals() and conn.is_connected():
+            if 'conn' in locals() and conn.open:
                 conn.close()
 
     return render_template('login.html')
@@ -84,7 +86,7 @@ def register():
 
             # Enviar correo de bienvenida
             msg = Message(subject='🎉 ¡Bienvenido a la aplicación!',
-                         recipients=[correo])
+                          recipients=[correo])
             msg.html = f"""
             <div style="font-family:sans-serif;">
                 <h2>Hola, {username} 👋</h2>
@@ -107,7 +109,7 @@ def register():
             flash(f'Ocurrió un error: {str(e)}')
             return redirect(url_for('register'))
         finally:
-            if 'conn' in locals() and conn.is_connected():
+            if 'conn' in locals() and conn.open:
                 conn.close()
 
     return render_template('registro.html')
