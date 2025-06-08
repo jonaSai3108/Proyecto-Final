@@ -5,13 +5,12 @@ from db import get_connection  # Importar la función get_connection desde db.py
 
 # Importar blueprint después de definir get_connection si es necesario
 from api.torneos import torneos_bp
-
 from api.equipos import equipos_bp
-
-from api.facultades import facultades_bp  # Importamos nuestro blueprint
-
+from api.facultades import facultades_bp  
 from api.temporada import temporada_bp
-
+from api.cancha import cancha_bp
+from api.partido import partido_bp
+from api.temporada import temporada_bp
 from auth import auth_bp
 
 
@@ -21,13 +20,6 @@ app.secret_key = 'una_clave_secreta'
 # Configuracion de login
 
 
-# Importar y registrar blueprints
-from api.torneos import torneos_bp
-from api.equipos import equipos_bp
-from api.facultades import facultades_bp
-from api.temporada import temporada_bp
-from api.cancha import cancha_bp
-from api.partido import partido_bp
 
 app.register_blueprint(torneos_bp, url_prefix='/api/torneos')
 app.register_blueprint(equipos_bp, url_prefix='/api/equipos')

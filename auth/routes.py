@@ -1,11 +1,11 @@
-# Rutas de login, registro, logout
-from flask import render_template, request, redirect, session, url_for, flash
+from flask import render_template, request, redirect, session, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from auth import auth_bp
 from db import get_connection
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
+    registro_ok = request.args.get('registro')
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -15,7 +15,6 @@ def login():
         cursor.execute("SELECT * FROM login WHERE username = %s AND estado = 'ACTIVO'", (username,))
         user = cursor.fetchone()
 
-        #Hashear la contraseña ingresada
         if user and check_password_hash(user['password_hash'], password):
             cursor.execute("""
                 SELECT r.nombre_rol FROM login_rol lr
@@ -27,16 +26,15 @@ def login():
             session['id_login'] = user['id_login']
             session['username'] = user['username']
             session['rol'] = rol['nombre_rol']
-            flash('Bienvenido, ' + user['username'])
-            return redirect(url_for('auth.portada')) 
 
-        flash('Usuario o contraseña incorrectos', 'danger')
-        return render_template('Login.html')  
-    # <-- Agrega este return para el método GET
-    return render_template('Login.html')  
+            return redirect(url_for('portada'))  # Redirige a portada si login exitoso
 
+        else:
+            # Si credenciales son incorrectas, mostrar alerta
+            return render_template('login.html', message="Credenciales inválidas", category="danger", registro_ok=registro_ok)
 
-#Ruta de registro
+    return render_template('login.html', message=None, category=None, registro_ok=registro_ok)
+
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -55,22 +53,19 @@ def register():
 
             cursor.execute("INSERT INTO login_rol (id_login, id_rol) VALUES (%s, %s)", (id_login, 2))  # ID 2 = usuario
             conn.commit()
-            flash("Registro exitoso")
-            return redirect(url_for('auth.login'))
+            return redirect(url_for('auth.login', registro='ok'))
         except Exception as e:
             conn.rollback()
-            print("Error en registro:", e) 
-            flash("Error: " + str(e))
+            print("Error en registro:", e)
         finally:
             cursor.close()
-            conn.close()    
+            conn.close()
     return render_template('registro.html')
 
 @auth_bp.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('auth.login'))  
-
+    return redirect(url_for('auth.login'))
 
 
                                  
