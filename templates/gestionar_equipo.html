@@ -9,40 +9,51 @@
     <div class="modal fade" id="teamFormModal" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <form id="teamForm">
+      <form id="formRegistrar" enctype="multipart/form-data">
         <div class="modal-header">
           <h5 class="modal-title" id="teamFormTitle">Registrar Equipo</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
+
         <div class="modal-body row g-3">
           <input type="hidden" id="equipoId">
           <div class="col-md-6">
             <label for="nombre" class="form-label">Nombre del Equipo</label>
-            <input type="text" class="form-control" id="nombre" required>
+            <input type="text" id="nombre" name="nombre" class="form-control" required>
           </div>
+
           <div class="col-md-6">
             <label for="representante" class="form-label">Representante</label>
-            <input type="text" class="form-control" id="representante" required>
+            <input type="text" id="representante" name="representante" class="form-control" required>
           </div>
+
           <div class="col-md-6">
             <label for="contacto" class="form-label">Contacto</label>
-            <input type="text" class="form-control" id="contacto" required>
+            <input type="text" id="contacto" name="contacto" class="form-control" required>
           </div>
+
           <div class="col-md-6">
             <label for="estado" class="form-label">Estado</label>
-            <select class="form-select" id="estado">
+            <select id="estado" name="estado" class="form-select" required>...</select>
               <option value="Activo">Activo</option>
               <option value="Inactivo">Inactivo</option>
             </select>
           </div>
+
           <div class="col-md-6">
             <label for="fecha_registro" class="form-label">Fecha de Registro</label>
-            <input type="date" class="form-control" id="fecha_registro" required>
+            <input type="date" id="fecha_registro" name="fecha_registro" class="form-control" required>
           </div>
+
           <div class="col-md-6">
             <label for="id_facultad" class="form-label">ID Facultad</label>
-            <input type="number" class="form-control" id="id_facultad" required>
+            <select id="id_facultad" name="id_facultad" class="form-select" required>...</select>
           </div>
+
+          <div class="mb-3">
+        <label for="logo" class="form-label">Logo del equipo</label>
+        <input type="file" class="form-control" id="logo" name="logo" accept="image/*">
+    </div>
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary">Guardar</button>
