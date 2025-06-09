@@ -1,45 +1,42 @@
-    body {
-      padding-top: 90px;
-      background-color: #f8faf9;
-      font-family: 'Segoe UI', sans-serif;
-    }
-    .navbar {
-      background-color: #015551;
-    }
-    .navbar-brand img {
-      height: 60px;
-    }
-    .navbar .text-white {
-      font-size: 1.5rem;
-      font-weight: 600;
-    }
-    h1, h2 {
-      color: #015551;
-      font-weight: bold;
-    }
-    .btn-success {
-      background-color: #038c65 !important;
-      border-color: #038c65 !important;
-    }
-    .btn-success:hover {
-      background-color: #027a57 !important;
-    }
-    .btn-secondary {
-      background-color: #cccccc !important;
-      border-color: #cccccc !important;
-    }
-    footer {
-      padding: 1rem;
-      text-align: center;
-      color: #ffffff;
-      background-color: #015551;
-      margin-top: 50px;
-    }
-    .card {
-      background-color: #ffffff;
-      border: 1px solid #ddd;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    }
-    table th, table td {
-      vertical-align: middle;
-    }
+
+        :root {
+            --umes-green: #015551;
+            --umes-light: #f1f8ff;
+        }
+        
+        body {
+            padding-top: 70px;
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar-umes {
+            background-color: var(--umes-green) !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .card-header-umes {
+            background-color: var(--umes-green);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .btn-umes {
+            background-color: var(--umes-green);
+            border-color: var(--umes-green);
+            color: white;
+        }
+        
+        .btn-umes:hover {
+            background-color: #014540;
+            border-color: #014540;
+        }
+        
+        .badge-umes {
+            background-color: var(--umes-green);
+        }
+        
+        .partido-info {
+            background-color: var(--umes-light);
+            border-left: 4px solid var(--umes-green);
+        }
