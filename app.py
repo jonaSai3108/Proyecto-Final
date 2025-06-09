@@ -11,6 +11,9 @@ from api.temporada import temporada_bp
 from api.cancha import cancha_bp
 from api.partido import partido_bp
 from api.temporada import temporada_bp
+from api.jugadores import jugadores_bp
+from api.resultado import resultado_bp
+
 from auth import auth_bp
 
 
@@ -26,6 +29,8 @@ app.register_blueprint(facultades_bp, url_prefix='/api/facultades')
 app.register_blueprint(temporada_bp, url_prefix='/api/temporadas')
 app.register_blueprint(cancha_bp, url_prefix='/api/cancha')
 app.register_blueprint(partido_bp, url_prefix='/api/partido')
+app.register_blueprint(jugadores_bp, url_prefix='/api/jugadores')
+app.register_blueprint(resultado_bp, url_prefix='/api')
 # Configuración para manejo de sesiones
 app.register_blueprint(auth_bp)
 
