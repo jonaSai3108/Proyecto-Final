@@ -25,36 +25,27 @@ async function cargarFacultades() {
 }
 
 // Manejar el formulario de inserción
-document.getElementById('formEquipo').addEventListener('submit', async (e) => {
-  e.preventDefault();
+document.getElementById('formRegistrar').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
 
-  const data = getFormData();
-
-  // Validación simple
-  if (!data.nombre || !data.representante || !data.contacto || !data.estado || !data.fecha_registro || !data.id_facultad) {
-    alert('Por favor completa todos los campos');
-    return;
-  }
-
-  try {
-    const res = await fetch(API_INSERT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-
-    const result = await res.json();
-
-    if (res.ok) {
-      alert(result.mensaje);
-      document.getElementById('formEquipo').reset();
-      cargarEquipos(); // Recargar la tabla
-    } else {
-      alert('Error: ' + result.error);
+    try {
+        const res = await fetch('/api/equipos/insertar', {
+            method: 'POST',
+            body: formData
+        });
+        const result = await res.json();
+        if (res.ok) {
+            alert(result.mensaje || 'Equipo registrado correctamente');
+            form.reset();
+            loadTeams(); // Recarga la lista de equipos
+        } else {
+            alert(result.error || 'Error al registrar equipo');
+        }
+    } catch (err) {
+        alert('Error de conexión');
     }
-  } catch (err) {
-    alert('Error al conectar con el servidor');
-  }
 });
 
 // Extraer datos del formulario

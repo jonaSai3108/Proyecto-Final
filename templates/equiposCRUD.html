@@ -24,25 +24,27 @@
 
     <!-- Formulario -->
     <section class="card p-4 mb-5 shadow">
-      <form id="formEquipo">
+      <form id="formRegistrar" enctype="multipart/form-data">
         <div class="row g-3">
           <div class="col-md-6">
         <label for="nombre" class="form-label">Nombre del equipo</label>
-        <input type="text" id="nombre" class="form-control" required>
+        <input type="text" id="nombre" name="nombre" class="form-control" required>
+
       </div>
       <div class="col-md-6">
         <label for="representante" class="form-label">Representante</label>
-        <input type="text" id="representante" class="form-control" required>
+        <input type="text" id="representante" name="representante" class="form-control" required>
       </div>
+
       <div class="col-md-6">
         <label for="contacto" class="form-label">Contacto</label>
-        <input type="text" id="contacto" class="form-control" required>
+        <input type="text" id="contacto" name="contacto" class="form-control" required>
       </div>
 
       <div class="col-md-6">
         <label for="estado" class="form-label">Estado</label>
-        <select id="estado" class="form-select" required>
-          <option value="">Seleccione</option>
+        <select id="estado" name="estado" class="form-select" required>
+          <option value="">Seleccione un estado</option>
           <option value="Activo">Activo</option>
           <option value="Inactivo">Inactivo</option>
         </select>
@@ -50,15 +52,20 @@
       
       <div class="col-md-6">
         <label for="fecha_registro" class="form-label">Fecha de Registro</label>
-        <input type="date" id="fecha_registro" class="form-control" required>
+        <input type="date" id="fecha_registro" name="fecha_registro" class="form-control" required>
       </div>
 
       <div class="col-md-6">
         <label for="id_facultad" class="form-label">Facultad</label>
-        <select id="id_facultad" class="form-select" required>
+        <select id="id_facultad" name="id_facultad" class="form-select" required>
           <option value="">Carrera</option>
         </select>
       </div>
+
+      <div class="mb-3">
+        <label for="logo" class="form-label">Logo del equipo</label>
+        <input type="file" class="form-control" id="logo" name="logo" accept="image/*">
+    </div>
 
       <div class="d-flex justify-content-center">
         <button type="submit" class="btn w-25 mt-3 just" style="background-color: #A08963; border-color: #A08963; color: #fff;">
