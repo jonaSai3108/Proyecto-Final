@@ -15,7 +15,7 @@ from api.jugadores import jugadores_bp
 from api.resultado import resultado_bp
 
 from auth import auth_bp
-
+from api.resultado import resultado_bp
 
 
 app = Flask(__name__)
@@ -31,13 +31,14 @@ app.register_blueprint(cancha_bp, url_prefix='/api/cancha')
 app.register_blueprint(partido_bp, url_prefix='/api/partido')
 app.register_blueprint(jugadores_bp, url_prefix='/api/jugadores')
 app.register_blueprint(resultado_bp, url_prefix='/api')
+
 # Configuración para manejo de sesiones
 app.register_blueprint(auth_bp)
 
 
 # Rutas principales
 @app.route('/')
-def index():
+def index():   
     return render_template('index.html')
 
 
