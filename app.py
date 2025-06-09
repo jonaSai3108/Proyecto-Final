@@ -10,7 +10,9 @@ from api.facultades import facultades_bp
 from api.temporada import temporada_bp
 from api.cancha import cancha_bp
 from api.partido import partido_bp
-from api.temporada import temporada_bp
+from api.resultado import resultado_bp
+from api.jugadores import jugadores_bp
+
 from auth import auth_bp
 
 
@@ -26,6 +28,9 @@ app.register_blueprint(facultades_bp, url_prefix='/api/facultades')
 app.register_blueprint(temporada_bp, url_prefix='/api/temporadas')
 app.register_blueprint(cancha_bp, url_prefix='/api/cancha')
 app.register_blueprint(partido_bp, url_prefix='/api/partido')
+app.register_blueprint(resultado_bp, url_prefix='/api/resultados')
+app.register_blueprint(jugadores_bp, url_prefix='/api/jugadores')
+
 # Configuración para manejo de sesiones
 app.register_blueprint(auth_bp)
 
@@ -99,6 +104,35 @@ def editar_equipo():
 @app.route('/Temporada')
 def temporadas():
     return render_template('temporada.html')
+
+@app.route('/UEquipos')
+def UEquipos():
+    return render_template('UEquipos.html')
+
+@app.route('/UJugadores')
+def Ujugadores():
+    return render_template('UJugadores.html')
+
+@app.route('/UPantalla_Principal')
+def UPantalla_Principal():
+    return render_template('UPantalla_Principal.html')
+
+@app.route('/UPartidos')
+def  Upartidos():
+    return render_template('UPartidos.html')
+
+@app.route('/UResultados')
+def  UResultados():
+    return render_template('UResultados.html')
+
+@app.route('/UTablaPosiciones')
+def  UTablaPosiciones():
+    return render_template('UTablaPosiciones.html')
+
+@app.route('/UTorneo')
+def  UTorneo():
+    return render_template('UTorneo.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
