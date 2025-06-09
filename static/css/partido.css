@@ -1,3 +1,46 @@
+/* Estilos generales */
+body.bg-light {
+  background-color: #f8f9fa;
+}
+
+.container.mt-5 {
+  margin-top: 3rem;
+}
+
+h2.mb-4.text-center {
+  color: #015551;
+  font-weight: 600;
+}
+
+/* Estilos para el formulario */
+#formPartido.card {
+  border: none;
+  border-radius: 12px;
+  background-color: white;
+}
+
+#formPartido .form-label {
+  font-weight: 500;
+  color: #015551;
+}
+
+#formPartido .form-select,
+#formPartido .form-control {
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+}
+
+#formPartido .btn-primary {
+  background-color: #015551;
+  border-color: #015551;
+}
+
+#formPartido .btn-primary:hover {
+  background-color: #01403c;
+  border-color: #01403c;
+}
+
+/* Estilos para las tarjetas de partidos */
 .card-partido {
   background-color: #015551;
   color: rgb(236, 233, 233);
@@ -41,6 +84,7 @@
   color: #a9aaa7;
   cursor: pointer;
   font-size: 0.9rem;
+  transition: all 0.2s ease;
 }
 
 .btn-edit {
@@ -49,4 +93,109 @@
 
 .btn-delete {
   background-color: #dc3545;
+}
+
+.btn-edit:hover {
+  background-color: #e0a800;
+  color: white;
+}
+
+.btn-delete:hover {
+  background-color: #c82333;
+  color: white;
+}
+
+/* Estilos para la tabla de partidos */
+.card.shadow {
+  border-radius: 12px;
+  border: none;
+}
+
+.card.shadow .card-body {
+  padding: 0;
+}
+
+.table-responsive {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.table.table-striped.table-hover {
+  margin-bottom: 0;
+}
+
+.table-dark {
+  background-color: #015551;
+  color: rgb(236, 233, 233);
+}
+
+.table-dark th {
+  border-bottom: none;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+  --bs-table-accent-bg: rgba(1, 85, 81, 0.05);
+}
+
+.table-hover > tbody > tr:hover {
+  --bs-table-accent-bg: rgba(1, 85, 81, 0.1);
+}
+
+/* Estilos para los botones de acción en la tabla */
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.btn-warning {
+  background-color: #ffc107;
+  border-color: #ffc107;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+/* Estilos para el modal de confirmación */
+.modal-content {
+  border-radius: 12px;
+}
+
+.modal-header {
+  background-color: #015551;
+  color: rgb(236, 233, 233);
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.modal-title {
+  font-weight: 500;
+}
+
+/* Estilos para las alertas */
+.alert {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.alert-primary {
+  background-color: rgba(1, 85, 81, 0.9);
+  color: white;
+  border: none;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .card-partido {
+    margin-bottom: 15px;
+  }
+  
+  .card-actions {
+    justify-content: center;
+  }
+  
+  #formPartido .row > div {
+    margin-bottom: 1rem;
+  }
 }

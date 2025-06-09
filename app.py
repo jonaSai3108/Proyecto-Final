@@ -14,7 +14,12 @@ from api.resultado import resultado_bp
 from api.jugadores import jugadores_bp
 
 from auth import auth_bp
+from api.temporada import temporada_bp
+from api.jugadores import jugadores_bp
+from api.resultado import resultado_bp
 
+from auth import auth_bp
+from api.resultado import resultado_bp
 
 
 app = Flask(__name__)
@@ -37,7 +42,7 @@ app.register_blueprint(auth_bp)
 
 # Rutas principales
 @app.route('/')
-def index():
+def index():   
     return render_template('index.html')
 
 

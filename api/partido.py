@@ -1,41 +1,87 @@
 from flask import Blueprint, request, jsonify
 from db import get_connection
 
-partido_bp = Blueprint('partido', __name__)
 
-@partido_bp.route('/listar', methods=['GET'])
+partido_bp = Blueprint('partido_bp', __name__, url_prefix='/api/partidos')
+  
+
+@partido_bp.route('/', methods=['GET'])
 def listar_partidos():
     try:
         connection = get_connection()
         cursor = connection.cursor(dictionary=True)
 
         cursor.callproc('sp_ListarPartidosProximos')
+        
+        partidos = []
         for result in cursor.stored_results():
             partidos = result.fetchall()
 
-        return jsonify(partidos)
+        if not partidos:
+            return jsonify({"mensaje": "No hay partidos disponibles", "data": []}), 200
+
+        return jsonify({
+            "success": True,
+            "data": partidos,
+            "count": len(partidos)
+        })
+
+    except Exception as e:
+        print(f"Error al obtener partidos: {str(e)}")  # Log para depuración
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 500
 
     finally:
-        cursor.close()
-        connection.close()
+        if 'cursor' in locals():
+            cursor.close()
+        if 'connection' in locals():
+            connection.close()
 
-
-@partido_bp.route('/crear', methods=['POST'])
+@partido_bp.route('/', methods=['POST'])
 def crear_partido():
-    data = request.json
-    connection = get_connection()
-    cursor = connection.cursor()
+    try:
+        data = request.get_json()  # Mejor usar get_json() para manejo de errores
+        
+        if not data:
+            return jsonify({"success": False, "error": "Datos no proporcionados"}), 400
 
-    cursor.callproc('sp_InsertarPartido', (
-        data['id_jornada'],
-        data['id_cancha'],
-        data['fecha_partido'],
-        data['hora_partido'],
-        data['estado']
-    ))
-    connection.commit()
+        required_fields = ['id_jornada', 'id_cancha', 'fecha_partido', 'hora_partido', 'estado']
+        if not all(field in data for field in required_fields):
+            return jsonify({"success": False, "error": "Faltan campos requeridos"}), 400
 
-    return jsonify({'mensaje': 'Partido creado exitosamente'})
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        cursor.callproc('sp_InsertarPartido', (
+            data['id_jornada'],
+            data['id_cancha'],
+            data['fecha_partido'],
+            data['hora_partido'],
+            data['estado']
+        ))
+        connection.commit()
+
+        return jsonify({
+            "success": True,
+            "mensaje": "Partido creado exitosamente"
+        })
+
+    except Exception as e:
+        print(f"Error al crear partido: {str(e)}")
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 500
+
+    finally:
+        if 'cursor' in locals():
+            cursor.close()
+        if 'connection' in locals():
+            connection.close()
+
+
 
 
 @partido_bp.route('/editar/<int:id_partido>', methods=['PUT'])
