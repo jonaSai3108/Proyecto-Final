@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     filterEstado.addEventListener('change', loadPlayers);
     searchButton.addEventListener('click', filterPlayers);
 
-    // Buscar jugadores (no usado directamente pero útil si se desea buscar por nombre + filtros)
+    // Buscar jugadores 
     async function buscarJugadores({ nombre = '', id_equipo = 0, estado = -1 }) {
         try {
             const params = new URLSearchParams();
@@ -151,6 +151,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>`);
         });
     }
+
+    function renderPlayersSinEditar(players) {
+    playersContainer.innerHTML = '';
+    if (!players.length) {
+        playersContainer.innerHTML = '<div class="empty-state text-center">No se encontraron jugadores.</div>';
+        return;
+    }
+
+    players.forEach(p => {
+        const fullName = `${p.nombre} ${p.apellido}`;
+        playersContainer.insertAdjacentHTML('beforeend', `
+            <div class="col-md-4 mb-4">
+                <div class="card player-card">
+                    <div class="card-body text-center">
+                        <h5 class="player-name">${fullName}</h5>
+                        <p>Edad: ${p.edad || '-'}</p>
+                        <p>Dorsal: ${p.dorsal || '-'}</p>
+                        <p>Equipo: ${p.equipo || 'Sin equipo'}</p>
+                        <p>Goles: ${p.total_goles ?? 0}</p>
+                        <p>Tarjetas:<br> Amarillas: ${p.tarjetas_amarillas ?? 0}<br> Rojas: ${p.tarjetas_rojas ?? 0}</p>
+                        <p>Suspendido: ${p.suspendido ? 'Sí' : 'No'}</p>
+                    </div>
+                </div>
+            </div>`);
+    });
+}
+
 
     // Editar jugador
     editForm.addEventListener('submit', async e => {

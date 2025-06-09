@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Jugadores</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/equipos.css') }}">
+    <style>
+        .player-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            transition: transform 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+        .player-card:hover {
+            transform: scale(1.02);
+        }
+        .player-name {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .empty-state {
+            margin-top: 50px;
+            text-align: center;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+  <!-- Nav y buscador -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="#"><i class="fas fa-futbol me-2"></i>Jugadores del Torneo</a>
+      <a class="nav-link" href="/portada" id="backButton">
+            <i class="fas fa-arrow-left me-1"></i>Regresar
+        </a>
+    </div>
+  </nav>
+
+  <div class="container mt-5 pt-5">
+    <h1 class="text-center mb-4">Jugadores</h1>
+    <!-- resto del contenido -->
+
+
+        <!-- FILTROS: Equipo, Estado y Buscador -->
+        <div class="container mb-3">
+            <div class="row g-2">
+                <div class="col-sm-6 col-md-4">
+                    <label for="filterEquipo" class="form-label">Filtrar por equipo</label>
+                    <select id="filterEquipo" class="form-select">
+                        <option value="">Todos los equipos</option>
+                        <!-- Aquí luego cargas dinámicamente los equipos -->
+                    </select>
+                </div>
+                <div class="col-sm-6 col-md-4">
+                    <label for="filterEstado" class="form-label">Filtrar por estado</label>
+                    <select id="filterEstado" class="form-select">
+                        <option value="">Todos los estados</option>
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                    </select>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <label class="form-label d-block">&nbsp;</label>
+                    <div class="input-group">
+                        <input type="text" id="buscarInput" class="form-control" placeholder="Buscar por nombre...">
+                        <button class="btn btn-outline-secondary" id="searchButton">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" id="playersContainer">
+            <!-- Aquí se insertan las tarjetas de jugadores -->
+        </div>
+    </div>
+
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+        const playersContainer = document.getElementById('playersContainer');
+        const buscarInput = document.getElementById('buscarInput');
+        const filterEquipo = document.getElementById('filterEquipo');
+        const filterEstado = document.getElementById('filterEstado');
+        const searchButton = document.getElementById('searchButton');
+
+        let jugadoresGlobales = [];
+
+        function renderPlayersSinEditar(players) {
+            playersContainer.innerHTML = '';
+            if (!players.length) {
+                playersContainer.innerHTML = '<div class="empty-state text-center">No se encontraron jugadores.</div>';
+                return;
+            }
+
+            players.forEach(p => {
+                const fullName = `${p.nombre} ${p.apellido}`;
+                playersContainer.insertAdjacentHTML('beforeend', `
+                    <div class="col-md-4 mb-4">
+                        <div class="card player-card">
+                            <div class="card-body text-center">
+                                <h5 class="player-name">${fullName}</h5>
+                                <p>Edad: ${p.edad || '-'}</p>
+                                <p>Dorsal: ${p.dorsal || '-'}</p>
+                                <p>Equipo: ${p.equipo || 'Sin equipo'}</p>
+                                <p>Goles: ${p.total_goles ?? 0}</p>
+                                <p>Tarjetas:<br> Amarillas: ${p.tarjetas_amarillas ?? 0}<br> Rojas: ${p.tarjetas_rojas ?? 0}</p>
+                                <p>Suspendido: ${p.suspendido ? 'Sí' : 'No'}</p>
+                            </div>
+                        </div>
+                    </div>`);
+            });
+        }
+
+        // Filtrar jugadores según filtros y búsqueda
+        function filtrarJugadores() {
+            const textoBuscar = buscarInput.value.toLowerCase();
+            const equipoSeleccionado = filterEquipo.value.toLowerCase();
+            const estadoSeleccionado = filterEstado.value.toLowerCase();
+
+            const filtrados = jugadoresGlobales.filter(j => {
+                const nombreCompleto = `${j.nombre} ${j.apellido}`.toLowerCase();
+                const equipo = (j.equipo || '').toLowerCase();
+                const estado = j.suspendido ? 'inactivo' : 'activo'; // Ejemplo de estado basado en suspendido
+
+                return nombreCompleto.includes(textoBuscar)
+                    && (equipoSeleccionado === '' || equipo === equipoSeleccionado)
+                    && (estadoSeleccionado === '' || estado === estadoSeleccionado);
+            });
+
+            renderPlayersSinEditar(filtrados);
+        }
+
+        function obtenerJugadores() {
+            axios.get('/api/jugadores')
+                .then(response => {
+                    jugadoresGlobales = response.data;
+
+                    // Aquí puedes cargar dinámicamente los equipos en el filtro
+                    cargarEquiposUnicos(jugadoresGlobales);
+
+                    renderPlayersSinEditar(jugadoresGlobales);
+                })
+                .catch(error => {
+                    console.error('Error al cargar jugadores:', error);
+                    playersContainer.innerHTML = '<div class="empty-state text-center">Error al cargar jugadores.</div>';
+                });
+        }
+
+        // Cargar equipos únicos en el select
+        function cargarEquiposUnicos(jugadores) {
+            const equipos = [...new Set(jugadores.map(j => j.equipo).filter(e => e))];
+            filterEquipo.innerHTML = '<option value="">Todos los equipos</option>';
+            equipos.forEach(equipo => {
+                filterEquipo.insertAdjacentHTML('beforeend', `<option value="${equipo.toLowerCase()}">${equipo}</option>`);
+            });
+        }
+
+        // Eventos para filtrar al cambiar filtros o buscar
+        buscarInput.addEventListener('input', filtrarJugadores);
+        filterEquipo.addEventListener('change', filtrarJugadores);
+        filterEstado.addEventListener('change', filtrarJugadores);
+        searchButton.addEventListener('click', filtrarJugadores);
+
+        document.addEventListener('DOMContentLoaded', obtenerJugadores);
+    </script>
+</body>
+</html>
