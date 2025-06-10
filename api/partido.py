@@ -86,34 +86,57 @@ def crear_partido():
 
 @partido_bp.route('/editar/<int:id_partido>', methods=['PUT'])
 def editar_partido(id_partido):
-    data = request.json
-    connection = get_connection()
-    cursor = connection.cursor()
+    try:
+        data = request.get_json()
 
-    cursor.callproc('sp_EditarPartido', (
-        id_partido,
-        data['id_jornada'],
-        data['id_cancha'],
-        data['fecha_partido'],
-        data['hora_partido'],
-        data['estado']
-    ))
-    connection.commit()
+        required_fields = ['id_jornada', 'id_cancha', 'fecha_partido', 'hora_partido', 'estado']
+        if not all(field in data for field in required_fields):
+            return jsonify({"success": False, "error": "Faltan campos requeridos"}), 400
 
-    return jsonify({'mensaje': 'Partido editado correctamente'})
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        cursor.callproc('sp_EditarPartido', (
+            id_partido,
+            data['id_jornada'],
+            data['id_cancha'],
+            data['fecha_partido'],
+            data['hora_partido'],
+            data['estado']
+        ))
+        connection.commit()
+
+        return jsonify({'success': True, 'mensaje': 'Partido editado correctamente'})
+
+    except Exception as e:
+        print(f"Error al editar partido: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+    finally:
+        if 'cursor' in locals():
+            cursor.close()
+        if 'connection' in locals():
+            connection.close()
+
 
 
 @partido_bp.route('/eliminar/<int:id_partido>', methods=['DELETE'])
 def eliminar_partido(id_partido):
-    connection = get_connection()
-    cursor = connection.cursor()
-
     try:
+        connection = get_connection()
+        cursor = connection.cursor()
         cursor.callproc('sp_EliminarPartido', (id_partido,))
         connection.commit()
-        return jsonify({'mensaje': 'Partido eliminado (desactivado)'})
+
+        return jsonify({'success': True, 'mensaje': 'Partido eliminado (desactivado)'})
+
     except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        error_msg = str(e)
+        print(f"Error al eliminar partido: {error_msg}")
+        return jsonify({'success': False, 'error': error_msg}), 400
+
     finally:
-        cursor.close()
-        connection.close()
+        if 'cursor' in locals():
+            cursor.close()
+        if 'connection' in locals():
+            connection.close()

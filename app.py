@@ -12,6 +12,7 @@ from api.cancha import cancha_bp
 from api.partido import partido_bp
 from api.resultado import resultado_bp
 from api.jugadores import jugadores_bp
+from api.tablaposiciones import posiciones_bp
 from auth import auth_bp
 
 
@@ -32,6 +33,8 @@ app.register_blueprint(cancha_bp, url_prefix='/api/cancha')
 app.register_blueprint(partido_bp, url_prefix='/api/partido')
 app.register_blueprint(resultado_bp, url_prefix='/api/resultados')
 app.register_blueprint(jugadores_bp, url_prefix='/api/jugadores')
+app.register_blueprint(posiciones_bp, url_prefix='/api/posiciones')
+
 
 # Configuración para manejo de sesiones
 app.register_blueprint(auth_bp)
@@ -93,7 +96,7 @@ def Arbitros():
 
 @app.route('/TablaPosiciones')
 def TablaPosiciones():
-    return render_template('TablaPosisiones.html')
+    return render_template('TablaPosiciones.html')
 
 @app.route('/EquiposCRUD')
 def EquiposCRUD():
