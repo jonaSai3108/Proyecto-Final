@@ -12,14 +12,11 @@ from api.cancha import cancha_bp
 from api.partido import partido_bp
 from api.resultado import resultado_bp
 from api.jugadores import jugadores_bp
-
 from auth import auth_bp
-from api.temporada import temporada_bp
-from api.jugadores import jugadores_bp
-from api.resultado import resultado_bp
 
-from auth import auth_bp
-from api.resultado import resultado_bp
+
+
+
 
 
 app = Flask(__name__)
